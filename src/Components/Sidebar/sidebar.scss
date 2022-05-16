@@ -1,0 +1,12 @@
+.Sidebar {
+    width: 15%;
+    min-height: 100vh;
+    left: 0;
+    position: fixed;
+    .ant-menu-item-selected {
+        background-color: #60cf59 !important;
+    }
+    .ant-menu {
+        background-color: #242526 !important;
+    }
+}
