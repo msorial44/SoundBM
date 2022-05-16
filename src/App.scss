@@ -4,6 +4,10 @@
 
 .options {
   display: none;
+  position: absolute;
+  width: 80%;
+  height: 100%;
+  right: 0;
 
   &.options-toggled {
     display: block;
@@ -12,6 +16,10 @@
 
 .saved {
   display: none;
+  position: absolute;
+  width: 80%;
+  height: 100%;
+  right: 0;
 
   &.saved-toggled {
     display: block;
@@ -20,6 +28,10 @@
 
 .about {
   display: none;
+  position: absolute;
+  width: 80%;
+  height: 100%;
+  right: 0;
 
   &.about-toggled {
     display: block;

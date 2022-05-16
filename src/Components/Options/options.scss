@@ -1,0 +1,41 @@
+.Options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    right: 0;
+}
+
+
+
+.record-body {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+
+    .curr-record-key {
+        border: .05rem solid #000;
+        border-radius: .2rem;
+    }
+}
+
+.delete-body {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+
+    .curr-delete-key {
+        border: .05rem solid #000;
+        border-radius: .2rem;
+    }
+}
+
+.special-body {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+
+    .curr-special-key {
+        border: .05rem solid #000;
+        border-radius: .2rem;
+    }
+}
