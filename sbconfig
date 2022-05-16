@@ -1,0 +1,4 @@
+INPUT=1
+OUTPUT=6
+REC_KEY=numpad0
+PLAY_REC_KEY=numpadenter
