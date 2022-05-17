@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import logo from './logo.svg';
 import { Button } from 'antd';
+import { userInfo } from 'os';
+import { writeFile, readTextFile, createDir, FsTextFileOption } from '@tauri-apps/api/fs';
+import { type } from '@tauri-apps/api/os'
+import { dataDir } from '@tauri-apps/api/path';
 import 'antd/dist/antd.css';
 import './options.scss';
 
@@ -17,7 +21,21 @@ export default function Options(props: any) {
     const [recordButtonContent, setRecordButtonContent] = useState('Click to Record Keybind');
     const [deleteButtonContent, setDeleteButtonContent] = useState('Click to Record Keybind');
     const [specialButtonContent, setSpecialButtonContent] = useState('Click to Record Keybind');
+
+    const [systemType, setSystemType] = useState('WinMac');
+    const [textDir, setTextDir] = useState('Unknown');
     
+
+    useEffect(() => {
+      type().then(type => {
+        setSystemType(type);
+      });
+
+      dataDir().then(dir => {
+        setTextDir(dir);
+      });
+    }, []);
+
     const handleRecordClick = useCallback((event: { key: React.SetStateAction<string>; }) => {
       if (canRecord) {
         setRecordKey(event.key);
@@ -32,16 +50,62 @@ export default function Options(props: any) {
         setCanSpecial(false);
         setSpecialButtonContent('Click to Record Keybind');
       }
-      setCanRecord(false);
-      setCanDelete(false);
-      setCanSpecial(false);
+      
     }, [canRecord, canDelete, canSpecial]);
+      
+    useEffect(() => {
+      if (systemType === 'Windows_NT') {
+        const f: FsTextFileOption = {
+          path:  textDir + '\\tauri-apps\\keybinds.txt',
+          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n',
+        }
+        writeFile(f);
+      } else if (systemType === 'Darwin') {
+        const f: FsTextFileOption = {
+          path: textDir + 'tauri-apps/keybinds.txt',
+          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n',
+        }
+        writeFile(f);
+      }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [recordKey, deleteKey, specialKey]); //Do not want a rerun when system and file dir is found so it does not overwrite previous settings.
+
+    useEffect(() => {
+      if (systemType === 'Darwin') {
+        readTextFile(textDir + 'tauri-apps/keybinds.txt').then(data => {
+          if (data.length !== 0) {
+            const lines = data.split('\n');
+            setRecordKey(lines[0]);
+            setDeleteKey(lines[1]);
+            setSpecialKey(lines[2]);
+          }
+        });
+      } else if (systemType === 'Windows_NT') {
+        readTextFile(textDir + '\\tauri-apps\\keybinds.txt').then(data => {
+          if (data.length !== 0) {
+            const lines = data.split('\n');
+            setRecordKey(lines[0]);
+            setDeleteKey(lines[1]);
+            setSpecialKey(lines[2]);
+          }
+        });
+      }
+    }, [systemType, textDir]);
+
+
+
+
 
     useEffect(() => {
       window.addEventListener('keydown', handleRecordClick);
       return () => window.removeEventListener('keydown', handleRecordClick);
 
     }, [handleRecordClick]);
+
+
+
+
+
 
     function handleRecord() {
       console.log('clicked record')
@@ -70,7 +134,7 @@ export default function Options(props: any) {
             </div>
             <div className='record-body'> 
               <Button type="default" onClick={() => {handleRecord()}}>{recordButtonContent}</Button>
-              <div className='curr-record-key'> {recordKey} </div>
+              <div className='curr-record-key'> {recordKey.toUpperCase()} </div>
             </div>
           </div>
 
@@ -80,7 +144,7 @@ export default function Options(props: any) {
             </div>
             <div className='delete-body'> 
               <Button type="default" onClick={() => {handleDelete()}}>{deleteButtonContent}</Button>
-              <div className='curr-delete-key'> {deleteKey} </div>
+              <div className='curr-delete-key'> {deleteKey.toUpperCase()} </div>
             </div>
           </div>
 
@@ -90,7 +154,7 @@ export default function Options(props: any) {
             </div>
             <div className='special-body'> 
               <Button type="default" onClick={() => {handleSpecial()}}>{specialButtonContent}</Button>
-              <div className='curr-special-key'> {specialKey} </div>
+              <div className='curr-special-key'> {specialKey.toUpperCase()} </div>
             </div>
           </div>
 
