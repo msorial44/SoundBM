@@ -56,13 +56,13 @@ export default function Options(props: any) {
     useEffect(() => {
       if (systemType === 'Windows_NT') {
         const f: FsTextFileOption = {
-          path:  textDir + '\\tauri-apps\\keybinds.txt',
+          path:  textDir + '\\soundbm\\keybinds.txt',
           contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n',
         }
         writeFile(f);
       } else if (systemType === 'Darwin') {
         const f: FsTextFileOption = {
-          path: textDir + 'tauri-apps/keybinds.txt',
+          path: textDir + 'soundbm/keybinds.txt',
           contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n',
         }
         writeFile(f);
@@ -72,7 +72,7 @@ export default function Options(props: any) {
 
     useEffect(() => {
       if (systemType === 'Darwin') {
-        readTextFile(textDir + 'tauri-apps/keybinds.txt').then(data => {
+        readTextFile(textDir + 'soundbm/keybinds.txt').then(data => {
           if (data.length !== 0) {
             const lines = data.split('\n');
             setRecordKey(lines[0]);
@@ -81,7 +81,7 @@ export default function Options(props: any) {
           }
         });
       } else if (systemType === 'Windows_NT') {
-        readTextFile(textDir + '\\tauri-apps\\keybinds.txt').then(data => {
+        readTextFile(textDir + '\\soundbm\\keybinds.txt').then(data => {
           if (data.length !== 0) {
             const lines = data.split('\n');
             setRecordKey(lines[0]);
