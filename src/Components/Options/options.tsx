@@ -132,39 +132,59 @@ export default function Options(props: any) {
         setSpecialButtonContent('Recording...');
     }
 
+    function handleRecordClear() {
+        setRecordKey('N/A');
+        setRecordButtonContent('Click to Record Keybind');
+    }
+
+    function handleDeleteClear() {
+      setRecordKey('N/A');
+      setRecordButtonContent('Click to Record Keybind');
+    }
+
+    function handleSpecialClear() {
+      setRecordKey('N/A');
+      setRecordButtonContent('Click to Record Keybind');
+    }
+
     return (
         <div className="Options">
-
           <div className='record-options'>
-            <div className='record-title'>
+            <div className='key-title'>
               <h2>Record Button</h2>
             </div>
-            <div className='record-body'> 
+            <div className='key-body'> 
               <Button type="default" onClick={() => {handleRecord()}}>{recordButtonContent}</Button>
-              <div className='curr-record-key'> {recordKey.toUpperCase()} </div>
+              <div className='right-section'>
+                <div className='curr-key'> {recordKey.toUpperCase()} </div>
+                <Button type="default" onClick={() => {handleRecordClear()}}>Clear</Button>
+              </div>
             </div>
           </div>
-
           <div className='delete-options'>
-            <div className='delete-title'>
+            <div className='key-title'>
               <h2>Delete Button</h2>
             </div>
-            <div className='delete-body'> 
+            <div className='key-body'> 
               <Button type="default" onClick={() => {handleDelete()}}>{deleteButtonContent}</Button>
-              <div className='curr-delete-key'> {deleteKey.toUpperCase()} </div>
+              <div className='right-section'>
+                <div className='curr-key'> {deleteKey.toUpperCase()} </div>
+                <Button type="default" onClick={() => {handleDeleteClear()}}>Clear</Button>
+              </div>
             </div>
           </div>
-
           <div className='special-options'>
-            <div className='special-title'>
+            <div className='key-title'>
               <h2>Special Button</h2>
             </div>
-            <div className='special-body'> 
+            <div className='key-body'> 
               <Button type="default" onClick={() => {handleSpecial()}}>{specialButtonContent}</Button>
-              <div className='curr-special-key'> {specialKey.toUpperCase()} </div>
+              <div className='right-section'>
+                <div className='curr-key'> {specialKey.toUpperCase()} </div>
+                <Button type="default" onClick={() => {handleSpecialClear()}}>Clear</Button>
+              </div>
             </div>
           </div>
-
         </div>
       );
 
