@@ -79,6 +79,15 @@ export default function Options(props: any) {
             setDeleteKey(lines[1]);
             setSpecialKey(lines[2]);
           }
+        }).catch(err => {
+          if (err.includes("No such file or directory (os error 2)")) {
+            createDir(textDir + 'soundbm');
+            const f: FsTextFileOption = {
+              path: textDir + 'soundbm/keybinds.txt',
+              contents: '',
+            }
+            writeFile(f);
+          }
         });
       } else if (systemType === 'Windows_NT') {
         readTextFile(textDir + '\\soundbm\\keybinds.txt').then(data => {
@@ -88,24 +97,24 @@ export default function Options(props: any) {
             setDeleteKey(lines[1]);
             setSpecialKey(lines[2]);
           }
+        }).catch(err => {
+          if (err.includes("No such file or directory (os error 2)")) {
+            createDir(textDir + 'soundbm');
+            const f: FsTextFileOption = {
+              path: textDir + 'soundbm/keybinds.txt',
+              contents: '',
+            }
+            writeFile(f);
+          }
         });
       }
     }, [systemType, textDir]);
-
-
-
-
 
     useEffect(() => {
       window.addEventListener('keydown', handleRecordClick);
       return () => window.removeEventListener('keydown', handleRecordClick);
 
     }, [handleRecordClick]);
-
-
-
-
-
 
     function handleRecord() {
       console.log('clicked record')
@@ -122,8 +131,6 @@ export default function Options(props: any) {
         setCanSpecial(true);
         setSpecialButtonContent('Recording...');
     }
-
-
 
     return (
         <div className="Options">
