@@ -5,6 +5,7 @@ import { userInfo } from 'os';
 import { writeFile, readTextFile, createDir, FsTextFileOption } from '@tauri-apps/api/fs';
 import { type } from '@tauri-apps/api/os'
 import { dataDir } from '@tauri-apps/api/path';
+import { invoke } from '@tauri-apps/api/tauri'
 import 'antd/dist/antd.css';
 import './options.scss';
 
@@ -34,6 +35,8 @@ export default function Options(props: any) {
       dataDir().then(dir => {
         setTextDir(dir);
       });
+
+      invoke('list_devices').then((message) => console.log(message))
     }, []);
 
     const handleRecordClick = useCallback((event: { key: React.SetStateAction<string>; }) => {
