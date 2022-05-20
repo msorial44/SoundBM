@@ -28,7 +28,7 @@ export default function Options(props: any) {
     const [textDir, setTextDir] = useState('Unknown');
     
     const [audioInputs, setAudioInputs] = useState(['N/A']);
-    const [selectedAudioInput, setSelectedAudioInput] = useState('N/A');
+    const [selectedAudioInput, setSelectedAudioInput] = useState('Select an Input Device');
     
 
     useEffect(() => {
@@ -89,6 +89,7 @@ export default function Options(props: any) {
             setRecordKey(lines[0]);
             setDeleteKey(lines[1]);
             setSpecialKey(lines[2]);
+            setSelectedAudioInput(lines[3]);
           }
         }).catch(err => {
           if (err.includes("No such file or directory (os error 2)")) {
@@ -107,6 +108,7 @@ export default function Options(props: any) {
             setRecordKey(lines[0]);
             setDeleteKey(lines[1]);
             setSpecialKey(lines[2]);
+            setSelectedAudioInput(lines[3]);
           }
         }).catch(err => {
           if (err.includes("No such file or directory (os error 2)")) {
@@ -161,7 +163,10 @@ export default function Options(props: any) {
 
 
     return (
-        <div className="Options">
+        <div className='Options'>
+          <div className='options-header'>
+            <h1>Keybinds</h1>
+          </div>
           <div className='record-options'>
             <div className='key-title'>
               <h2>Record Button</h2>
@@ -198,13 +203,17 @@ export default function Options(props: any) {
               </div>
             </div>
           </div>
+
+          <div className='options-header'>
+            <h1>Audio Input</h1>
+          </div>
           <div className='audio-options'>
             <div className='audio-dropdown'>
             <Select
               showSearch
               style={{ width: '100%' }}
               bordered={false}
-              placeholder="Select an input device"
+              placeholder={selectedAudioInput}
               onChange={(value: any) => { setSelectedAudioInput(value); }}
             >
               {audioInputs.map((device: any) => <Option value={device}>{device}</Option>)}

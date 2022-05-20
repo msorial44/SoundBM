@@ -11,6 +11,14 @@
     text-align: left;
 }
 
+.record-options {
+    margin-top: -1rem;
+}
+
+.special-options {
+    margin-bottom: 1rem;
+}
+
 .key-body {
     display: flex;
     flex-direction: row;
@@ -67,4 +75,30 @@
     }
     
 
+}
+
+.audio-options {
+    display: flex;
+    .audio-dropdown {
+        align-self: center;
+        border: .05rem solid #000;
+        border-radius: .2rem;
+        min-width: 2rem;
+        line-height: 1.5715;
+        position: relative;
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        background-image: none;
+        border: 1px solid transparent;
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+        height: 2rem;
+        color: rgba(0, 0, 0, 0.85);
+        border-color: #d9d9d9;
+        background: #fff;
+    }
+}
+
+.options-header {
+    text-align: left;
 }
