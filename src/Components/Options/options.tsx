@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import logo from './logo.svg';
-import { Button } from 'antd';
-import { userInfo } from 'os';
+import { Button, Select} from 'antd';
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { writeFile, readTextFile, createDir, FsTextFileOption } from '@tauri-apps/api/fs';
 import { type } from '@tauri-apps/api/os'
 import { dataDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api/tauri'
 import 'antd/dist/antd.css';
 import './options.scss';
+
+const { Option } = Select;
 
 
 export default function Options(props: any) {
@@ -26,6 +27,9 @@ export default function Options(props: any) {
     const [systemType, setSystemType] = useState('WinMac');
     const [textDir, setTextDir] = useState('Unknown');
     
+    const [audioInputs, setAudioInputs] = useState(['N/A']);
+    const [selectedAudioInput, setSelectedAudioInput] = useState('N/A');
+    
 
     useEffect(() => {
       type().then(type => {
@@ -36,7 +40,11 @@ export default function Options(props: any) {
         setTextDir(dir);
       });
 
-      invoke('list_devices').then((message) => console.log(message))
+      invoke('list_devices').then((message: any) => {
+        const devices: string[] = message.split(',');
+        devices.pop();
+        setAudioInputs(devices);
+      })
     }, []);
 
     const handleRecordClick = useCallback((event: { key: React.SetStateAction<string>; }) => {
@@ -59,23 +67,23 @@ export default function Options(props: any) {
     useEffect(() => {
       if (systemType === 'Windows_NT') {
         const f: FsTextFileOption = {
-          path:  textDir + '\\soundbm\\keybinds.txt',
-          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n',
+          path:  textDir + '\\soundbm\\options.txt',
+          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n' + selectedAudioInput,
         }
         writeFile(f);
       } else if (systemType === 'Darwin') {
         const f: FsTextFileOption = {
-          path: textDir + 'soundbm/keybinds.txt',
-          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n',
+          path: textDir + 'soundbm/options.txt',
+          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n' + selectedAudioInput,
         }
         writeFile(f);
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [recordKey, deleteKey, specialKey]); //Do not want a rerun when system and file dir is found so it does not overwrite previous settings.
+    }, [recordKey, deleteKey, specialKey, selectedAudioInput]); //Do not want a rerun when system and file dir is found so it does not overwrite previous settings.
 
     useEffect(() => {
       if (systemType === 'Darwin') {
-        readTextFile(textDir + 'soundbm/keybinds.txt').then(data => {
+        readTextFile(textDir + 'soundbm/options.txt').then(data => {
           if (data.length !== 0) {
             const lines = data.split('\n');
             setRecordKey(lines[0]);
@@ -86,14 +94,14 @@ export default function Options(props: any) {
           if (err.includes("No such file or directory (os error 2)")) {
             createDir(textDir + 'soundbm');
             const f: FsTextFileOption = {
-              path: textDir + 'soundbm/keybinds.txt',
+              path: textDir + 'soundbm/options.txt',
               contents: '',
             }
             writeFile(f);
           }
         });
       } else if (systemType === 'Windows_NT') {
-        readTextFile(textDir + '\\soundbm\\keybinds.txt').then(data => {
+        readTextFile(textDir + '\\soundbm\\options.txt').then(data => {
           if (data.length !== 0) {
             const lines = data.split('\n');
             setRecordKey(lines[0]);
@@ -104,7 +112,7 @@ export default function Options(props: any) {
           if (err.includes("No such file or directory (os error 2)")) {
             createDir(textDir + 'soundbm');
             const f: FsTextFileOption = {
-              path: textDir + 'soundbm/keybinds.txt',
+              path: textDir + 'soundbm/options.txt',
               contents: '',
             }
             writeFile(f);
@@ -150,6 +158,8 @@ export default function Options(props: any) {
       setRecordButtonContent('Click to Record Keybind');
     }
 
+
+
     return (
         <div className="Options">
           <div className='record-options'>
@@ -186,6 +196,19 @@ export default function Options(props: any) {
                 <div className='curr-key'> {specialKey.toUpperCase()} </div>
                 <Button type="default" onClick={() => {handleSpecialClear()}}>Clear</Button>
               </div>
+            </div>
+          </div>
+          <div className='audio-options'>
+            <div className='audio-dropdown'>
+            <Select
+              showSearch
+              style={{ width: '100%' }}
+              bordered={false}
+              placeholder="Select an input device"
+              onChange={(value: any) => { setSelectedAudioInput(value); }}
+            >
+              {audioInputs.map((device: any) => <Option value={device}>{device}</Option>)}
+            </Select>
             </div>
           </div>
         </div>
