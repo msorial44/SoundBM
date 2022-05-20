@@ -68,10 +68,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "minHeight": 450,
         "resizable": true,
         "title": "Sound-BM",
-        "width": 800
+        "minWidth": 600
       }
     ]
   }

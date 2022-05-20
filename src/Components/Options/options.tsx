@@ -29,6 +29,9 @@ export default function Options(props: any) {
     
     const [audioInputs, setAudioInputs] = useState(['N/A']);
     const [selectedAudioInput, setSelectedAudioInput] = useState('Select an Input Device');
+
+    const [audioOutputs, setAudioOutputs] = useState(['N/A']);
+    const [selectedAudioOutput, setSelectedAudioOutput] = useState('Select an Output Device');
     
 
     useEffect(() => {
@@ -40,10 +43,16 @@ export default function Options(props: any) {
         setTextDir(dir);
       });
 
-      invoke('list_devices').then((message: any) => {
+      invoke('list_in_devices').then((message: any) => {
         const devices: string[] = message.split(',');
         devices.pop();
         setAudioInputs(devices);
+      })
+
+      invoke('list_out_devices').then((message: any) => {
+        const devices: string[] = message.split(',');
+        devices.pop();
+        setAudioOutputs(devices);
       })
     }, []);
 
@@ -68,18 +77,18 @@ export default function Options(props: any) {
       if (systemType === 'Windows_NT') {
         const f: FsTextFileOption = {
           path:  textDir + '\\soundbm\\options.txt',
-          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n' + selectedAudioInput,
+          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n' + selectedAudioInput + '\n' + selectedAudioOutput,
         }
         writeFile(f);
       } else if (systemType === 'Darwin') {
         const f: FsTextFileOption = {
           path: textDir + 'soundbm/options.txt',
-          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n' + selectedAudioInput,
+          contents: recordKey + '\n' + deleteKey + '\n' + specialKey + '\n' + selectedAudioInput + '\n' + selectedAudioOutput,
         }
         writeFile(f);
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [recordKey, deleteKey, specialKey, selectedAudioInput]); //Do not want a rerun when system and file dir is found so it does not overwrite previous settings.
+    }, [recordKey, deleteKey, specialKey, selectedAudioInput, selectedAudioOutput]); //Do not want a rerun when system and file dir is found so it does not overwrite previous settings.
 
     useEffect(() => {
       if (systemType === 'Darwin') {
@@ -90,6 +99,7 @@ export default function Options(props: any) {
             setDeleteKey(lines[1]);
             setSpecialKey(lines[2]);
             setSelectedAudioInput(lines[3]);
+            setSelectedAudioOutput(lines[4]);
           }
         }).catch(err => {
           if (err.includes("No such file or directory (os error 2)")) {
@@ -109,6 +119,7 @@ export default function Options(props: any) {
             setDeleteKey(lines[1]);
             setSpecialKey(lines[2]);
             setSelectedAudioInput(lines[3]);
+            setSelectedAudioOutput(lines[4]);
           }
         }).catch(err => {
           if (err.includes("No such file or directory (os error 2)")) {
@@ -160,6 +171,9 @@ export default function Options(props: any) {
       setRecordButtonContent('Click to Record Keybind');
     }
 
+    function handleRun() {
+      invoke('run_script');
+    }
 
 
     return (
@@ -204,21 +218,45 @@ export default function Options(props: any) {
             </div>
           </div>
 
-          <div className='options-header'>
-            <h1>Audio Input</h1>
+          <div className='audio-options-header'>
+            <h1>Audio Settings</h1>
           </div>
           <div className='audio-options'>
-            <div className='audio-dropdown'>
-            <Select
-              showSearch
-              style={{ width: '100%' }}
-              bordered={false}
-              placeholder={selectedAudioInput}
-              onChange={(value: any) => { setSelectedAudioInput(value); }}
-            >
-              {audioInputs.map((device: any) => <Option value={device}>{device}</Option>)}
-            </Select>
+            <div className='audio-section'>
+            <div className='audio-title'>
+              <h2>Audio Input</h2>
             </div>
+            <div className='audio-dropdown'>
+              <Select
+                showSearch
+                style={{ width: '100%' }}
+                bordered={false}
+                placeholder={selectedAudioInput}
+                onChange={(value: any) => { setSelectedAudioInput(value); }}
+              >
+                {audioInputs.map((device: any) => <Option value={device}>{device}</Option>)}
+              </Select>
+            </div>
+            </div>
+            <div className='audio-section'>
+              <div className='audio-title'>
+                <h2>Audio Output</h2>
+              </div>
+              <div className='audio-dropdown'>
+                <Select
+                  showSearch
+                  style={{ width: '100%' }}
+                  bordered={false}
+                  placeholder={selectedAudioOutput}
+                  onChange={(value: any) => { setSelectedAudioOutput(value); }}
+                >
+                  {audioOutputs.map((device: any) => <Option value={device}>{device}</Option>)}
+                </Select>
+              </div>
+            </div>
+          </div>
+          <div className='start-section'>
+            <Button type="primary" onClick={() => {handleRun()}}>Start</Button>
           </div>
         </div>
       );
