@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Select} from 'antd';
-import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { writeFile, readTextFile, createDir, FsTextFileOption } from '@tauri-apps/api/fs';
 import { type } from '@tauri-apps/api/os'
 import { dataDir } from '@tauri-apps/api/path';
