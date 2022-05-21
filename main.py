@@ -1,3 +1,4 @@
+from time import time
 import sounddevice as sd
 import soundfile as sf
 from pynput import keyboard
@@ -6,7 +7,7 @@ import numpy as np
 # Vars
 mic_in = 1
 mic_out = 6
-latency = 0.2
+latency = 0.2 # min 0.2
 last_callback = 0
 
 rec_key = "+"
@@ -64,9 +65,14 @@ def callback(indata, outdata, frames, time, status):
         print(status)
     outdata[:] = indata
 
+    
     if recording["record_state"]:
+        global last_callback
         recording["data"] = np.append(recording["data"], np.frombuffer(indata, np.float32))
-        recording["sr"] = frames * 68.90625#(1584 * 60 + frames * 60) / 2
+        recording["sr"] = (recording["sr"] + (frames / (time.currentTime - last_callback) * 2)) / 2
+        #frames * 68.90625#(1584 * 60 + frames * 60) / 2
+        last_callback = time.currentTime
+    
 
     for sound in bindings:
         if sound["active"]:
